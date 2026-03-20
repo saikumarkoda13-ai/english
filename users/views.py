@@ -63,10 +63,11 @@ def UserHome(request):
 # =========================
 # DATASET VIEW
 # =========================
-def DatasetView(request):
-    import pandas as pd
+    from django.conf import settings
+    import os
+    path = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
     df = pd.read_csv(
-        "media/training_set_rel3.tsv",
+        path,
         sep='\t',
         encoding='ISO-8859-1'
     )
