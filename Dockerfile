@@ -31,5 +31,8 @@ EXPOSE 8000
 # Run the build script steps (migrate, nltk download)
 RUN python -c "import nltk; nltk.download('stopwords')"
 
-# Run gunicorn
-CMD ["gunicorn", "Automatic_English_Essay_Scoring_Algorithm_Based_On_Ml.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Make the start script executable
+RUN chmod +x /app/start.sh
+
+# Run start script
+CMD ["/app/start.sh"]
