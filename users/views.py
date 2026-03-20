@@ -226,6 +226,7 @@ def training(request):
 def get_ai_models():
     """Helper to lazily load and cache models only when needed."""
     global _MODEL_CACHE
+    import os
     
     if "word2vec" not in _MODEL_CACHE:
         from gensim.models import KeyedVectors
@@ -237,7 +238,6 @@ def get_ai_models():
         )
         
     if "lstm" not in _MODEL_CACHE:
-        import os
         from django.conf import settings
         os.environ["KERAS_BACKEND"] = "tensorflow"
         from keras.models import load_model
@@ -256,6 +256,8 @@ def prediction(request):
 
     if request.method == "POST":
         import numpy as np
+        import nltk
+        nltk.download('stopwords', quiet=True)
         from nltk.corpus import stopwords
         from PIL import Image
         import pytesseract
