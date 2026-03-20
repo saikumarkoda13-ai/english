@@ -3,7 +3,7 @@ pandas
 numpy
 nltk
 gensim
-tensorflow-cpu==2.17.0
+tensorflow-cpu==2.15.1
 keras==3.13.2
 h5py
 scikit-learn

@@ -1,53 +1,35 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib import messages
 
-from .forms import UserRegistrationForm
-from .models import UserRegistrationModel
-
-import pandas as pd
-import numpy as np
+# from .forms import UserRegistrationForm
+# from .models import UserRegistrationModel
+# import pandas as pd
+# import numpy as np
 import re
+# from nltk.corpus import stopwords
+# from gensim.models import Word2Vec
+# from gensim.models import KeyedVectors
 
-from nltk.corpus import stopwords
-from gensim.models import Word2Vec
-from gensim.models import KeyedVectors
-
-import os
-os.environ["KERAS_BACKEND"] = "tensorflow"
-import keras
-from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense, Dropout
-
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-
-from PIL import Image
-import pytesseract
+# Global variable for model caching
+_MODEL_CACHE = {}
 
 
 # =========================
 # USER REGISTRATION
 # =========================
 def UserRegisterActions(request):
-
+    from .forms import UserRegistrationForm
     if request.method == 'POST':
-
         form = UserRegistrationForm(request.POST)
-
         if form.is_valid():
-
             form.save()
             messages.success(request, 'You have been successfully registered')
-
             form = UserRegistrationForm()
             return render(request, 'UserRegistrations.html', {'form': form})
-
         else:
             messages.success(request, 'Email or Mobile Already Exists')
-
     else:
         form = UserRegistrationForm()
-
     return render(request, 'UserRegistrations.html', {'form': form})
 
 
@@ -55,35 +37,24 @@ def UserRegisterActions(request):
 # LOGIN
 # =========================
 def UserLoginCheck(request):
-
+    from .models import UserRegistrationModel
     if request.method == "POST":
-
         loginid = request.POST.get('loginid')
         pswd = request.POST.get('pswd')
-
         try:
-
             check = UserRegistrationModel.objects.get(
                 loginid=loginid,
                 password=pswd
             )
-
             if check.status == "activated":
-
                 request.session['id'] = check.id
                 request.session['loggeduser'] = check.name
                 request.session['loginid'] = loginid
-
                 return render(request, 'users/UserHomePage.html')
-
             else:
-
                 messages.success(request, 'Your Account Not Activated')
-
         except:
-
             messages.success(request, 'Invalid Login ID and Password')
-
     return render(request, 'UserLogin.html')
 
 
@@ -99,7 +70,7 @@ def UserHome(request):
 # DATASET VIEW
 # =========================
 def DatasetView(request):
-
+    import pandas as pd
     df = pd.read_csv(
         "media/training_set_rel3.tsv",
         sep='\t',
@@ -123,6 +94,16 @@ def DatasetView(request):
 # TRAINING
 # =========================
 def training(request):
+    import os
+    os.environ["KERAS_BACKEND"] = "tensorflow"
+    import pandas as pd
+    import numpy as np
+    from nltk.corpus import stopwords
+    from gensim.models import Word2Vec
+    from keras.models import Sequential
+    from keras.layers import LSTM, Dense, Dropout
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_squared_error
 
     df = pd.read_csv(
         "media/training_set_rel3.tsv",
@@ -240,15 +221,26 @@ def training(request):
 
 
 # =========================
-# LOAD TRAINED MODELS
+# LAZY LOADING CACHE HELPERS
 # =========================
-
-word2vec_model = KeyedVectors.load_word2vec_format(
-    "word2vecmodel.bin",
-    binary=True
-)
-
-lstm_model = load_model("final_lstm.h5", safe_mode=False)
+def get_ai_models():
+    """Helper to lazily load and cache models only when needed."""
+    global _MODEL_CACHE
+    
+    if "word2vec" not in _MODEL_CACHE:
+        from gensim.models import KeyedVectors
+        _MODEL_CACHE["word2vec"] = KeyedVectors.load_word2vec_format(
+            "word2vecmodel.bin",
+            binary=True
+        )
+        
+    if "lstm" not in _MODEL_CACHE:
+        import os
+        os.environ["KERAS_BACKEND"] = "tensorflow"
+        from keras.models import load_model
+        _MODEL_CACHE["lstm"] = load_model("final_lstm.h5", safe_mode=False)
+        
+    return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm"]
 
 
 # =========================
@@ -259,6 +251,13 @@ def prediction(request):
     score = None
 
     if request.method == "POST":
+        import numpy as np
+        from nltk.corpus import stopwords
+        from PIL import Image
+        import pytesseract
+        
+        # Load models lazily
+        word2vec_model, lstm_model = get_ai_models()
 
         final_text = request.POST.get("final_text")
         image_file = request.FILES.get("essay_image")
