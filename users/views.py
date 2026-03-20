@@ -245,7 +245,7 @@ word2vec_model = KeyedVectors.load_word2vec_format(
     binary=True
 )
 
-lstm_model = load_model("final_lstm.h5")
+lstm_model = load_model("final_lstm.h5", safe_mode=False)
 
 
 # =========================
