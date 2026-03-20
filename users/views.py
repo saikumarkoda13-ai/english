@@ -251,11 +251,9 @@ def get_ai_models():
 # PREDICTION
 # =========================
 def prediction(request):
-
-    score = None
-
-    if request.method == "POST":
-        try:
+    try:
+        score = None
+        if request.method == "POST":
             import numpy as np
             import nltk
             nltk.download('stopwords', quiet=True)
@@ -308,12 +306,10 @@ def prediction(request):
                 "users/predictForm.html",
                 {"score": score}
             )
-        except Exception as e:
-            # If any exception occurs, catch it and display it on the page instead of 500 error!
-            return render(
-                request,
-                "users/predictForm.html",
-                {"score": f"Server Error Caught: {str(e)}"}
-            )
 
-    return render(request, "users/predictForm.html")
+        # GET request
+        return render(request, "users/predictForm.html")
+        
+    except Exception as e:
+        # Catch any error (even on GET) and display it on the page instead of 500!
+        return HttpResponse(f"System Error: {str(e)}. Please check Render status.")

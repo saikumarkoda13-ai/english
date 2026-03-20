@@ -7,8 +7,8 @@ __pycache__/
 env/
 venv/
 ENV/
-!media/Processed_data.csv
-!media/training_set_rel3.tsv
+media/Processed_data.csv
+media/training_set_rel3.tsv
 media/image.png
 .env
 .vscode/
