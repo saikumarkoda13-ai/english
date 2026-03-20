@@ -29,12 +29,24 @@ ALLOWED_HOSTS = ['*']
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
 
-CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'https://english-1-l7zg.onrender.com']
+# Security settings
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://english-1-l7zg.onrender.com',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
 
 # Tell Django it's behind a secure proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+proxy_header = os.environ.get('PROXY_HEADER')
+if proxy_header:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
