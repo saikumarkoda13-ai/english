@@ -1,8 +1,7 @@
-# LAZY LOADING VERSION 3.2 - MEMORY OPTIMIZED
 from django.shortcuts import render, HttpResponse
 from django.contrib import messages
-
 import re
+import gc # Garbage Collection for Memory Management
 
 # Global variable for model caching
 _MODEL_CACHE = {}
@@ -238,25 +237,25 @@ def training(request):
 # LAZY LOADING CACHE HELPERS
 # =========================
 def get_ai_models():
-    """Helper to lazily load and cache models only when needed."""
+    """Helper to lazily load and cache models only when needed with GC."""
     global _MODEL_CACHE
     import os
+    from django.conf import settings
     
     if "word2vec" not in _MODEL_CACHE:
         from gensim.models import KeyedVectors
-        from django.conf import settings
         path = os.path.join(settings.BASE_DIR, "word2vecmodel.bin")
-        _MODEL_CACHE["word2vec"] = KeyedVectors.load_word2vec_format(
-            path,
-            binary=True
-        )
+        _MODEL_CACHE["word2vec"] = KeyedVectors.load_word2vec_format(path, binary=True)
+        gc.collect() # Clean up after loading large binary
         
     if "lstm" not in _MODEL_CACHE:
-        from django.conf import settings
         os.environ["KERAS_BACKEND"] = "tensorflow"
+        # We import ONLY what we need for loading
+        import tensorflow as tf
         from keras.models import load_model
         path = os.path.join(settings.BASE_DIR, "final_lstm.h5")
         _MODEL_CACHE["lstm"] = load_model(path, safe_mode=False)
+        gc.collect() # Clean up after TensorFlow initialization
         
     return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm"]
 
@@ -265,9 +264,13 @@ def get_ai_models():
 # PREDICTION
 # =========================
 def prediction(request):
+    from django.shortcuts import render, HttpResponse
     try:
         score = None
         if request.method == "POST":
+            # Manual trigger for GC to clear any previous overhead
+            gc.collect()
+            
             import numpy as np
             import nltk
             nltk.download('stopwords', quiet=True)
@@ -275,7 +278,7 @@ def prediction(request):
             from PIL import Image
             import pytesseract
             
-            # Load models lazily
+            # Load models lazily with internal GC
             word2vec_model, lstm_model = get_ai_models()
 
             final_text = request.POST.get("final_text")
@@ -285,6 +288,8 @@ def prediction(request):
             if image_file:
                 img = Image.open(image_file)
                 final_text = pytesseract.image_to_string(img)
+                del img # Clear image data from memory ASAP
+                gc.collect()
 
             if not final_text:
                 return render(
@@ -314,6 +319,10 @@ def prediction(request):
                 vec = vec.reshape(1, 1, 300)
                 pred = lstm_model.predict(vec)
                 score = str(round(float(pred[0][0])))
+            
+            # Final Cleanup before rendering
+            del words
+            gc.collect()
 
             return render(
                 request,
@@ -326,4 +335,6 @@ def prediction(request):
         
     except Exception as e:
         # Catch any error (even on GET) and display it on the page instead of 500!
-        return HttpResponse(f"System Error: {str(e)}. Please check Render status.")
+        # If it's a memory issue, we want to know
+        gc.collect()
+        return HttpResponse(f"System Resource Error: {str(e)}. (Likely Render RAM Limit 512MB reached).")
