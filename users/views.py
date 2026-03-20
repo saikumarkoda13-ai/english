@@ -99,15 +99,18 @@ def training(request):
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import mean_squared_error
 
+    from django.conf import settings
+    path_tsv = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
     df = pd.read_csv(
-        "media/training_set_rel3.tsv",
+        path_tsv,
         sep='\t',
         encoding='ISO-8859-1'
     )
 
     df.dropna(axis=1, inplace=True)
 
-    temp = pd.read_csv("media/Processed_data.csv")
+    path_processed = os.path.join(settings.MEDIA_ROOT, "Processed_data.csv")
+    temp = pd.read_csv(path_processed)
     temp.drop(columns=["Unnamed: 0"], inplace=True)
 
     df['domain1_score'] = temp['final_score']
@@ -223,16 +226,20 @@ def get_ai_models():
     
     if "word2vec" not in _MODEL_CACHE:
         from gensim.models import KeyedVectors
+        from django.conf import settings
+        path = os.path.join(settings.BASE_DIR, "word2vecmodel.bin")
         _MODEL_CACHE["word2vec"] = KeyedVectors.load_word2vec_format(
-            "word2vecmodel.bin",
+            path,
             binary=True
         )
         
     if "lstm" not in _MODEL_CACHE:
         import os
+        from django.conf import settings
         os.environ["KERAS_BACKEND"] = "tensorflow"
         from keras.models import load_model
-        _MODEL_CACHE["lstm"] = load_model("final_lstm.h5", safe_mode=False)
+        path = os.path.join(settings.BASE_DIR, "final_lstm.h5")
+        _MODEL_CACHE["lstm"] = load_model(path, safe_mode=False)
         
     return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm"]
 
