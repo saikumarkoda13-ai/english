@@ -17,7 +17,12 @@
     
     <div class="p-4 bg-dark">
         <div class="table-responsive" style="max-height: 600px;">
-            {% if data %}
+            {% if error %}
+                <div class="alert alert-warning border-0 shadow-sm animate__animated animate__shakeX">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ error }}
+                </div>
+            {% elif data %}
                 <div class="font-monospace text-light small py-3" style="line-height: 1.6;">
                     {{ data|safe }}
                 </div>

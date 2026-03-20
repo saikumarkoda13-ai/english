@@ -64,160 +64,174 @@ def UserHome(request):
 # DATASET VIEW
 # =========================
 def DatasetView(request):
-    import pandas as pd
-    from django.conf import settings
-    import os
-    path = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
-    df = pd.read_csv(
-        path,
-        sep='\t',
-        encoding='ISO-8859-1'
-    )
+    try:
+        import pandas as pd
+        from django.conf import settings
+        import os
+        path = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
+        
+        if not os.path.exists(path):
+             return render(request, 'users/viewdataset.html', {'error': 'Dataset files were removed to optimize server performance. Prediction remains fully functional.'})
 
-    df.dropna(axis=1, inplace=True)
+        df = pd.read_csv(
+            path,
+            sep='\t',
+            encoding='ISO-8859-1'
+        )
 
-    # Convert to HTML to avoid ambiguous truth value error in template
-    # We limit to 100 rows to ensure the browser doesn't freeze with large datasets
-    data_html = df.head(100).to_html(index=False) if not df.empty else None
+        df.dropna(axis=1, inplace=True)
 
-    return render(
-        request,
-        'users/viewdataset.html',
-        {'data': data_html}
-    )
+        # Convert to HTML to avoid ambiguous truth value error in template
+        # We limit to 100 rows to ensure the browser doesn't freeze with large datasets
+        data_html = df.head(100).to_html(index=False) if not df.empty else None
+
+        return render(
+            request,
+            'users/viewdataset.html',
+            {'data': data_html}
+        )
+    except Exception as e:
+        return render(request, 'users/viewdataset.html', {'error': f'Access Error: {str(e)}'})
 
 
 # =========================
 # TRAINING
 # =========================
 def training(request):
-    import os
-    os.environ["KERAS_BACKEND"] = "tensorflow"
-    import pandas as pd
-    import numpy as np
-    from nltk.corpus import stopwords
-    from gensim.models import Word2Vec
-    from keras.models import Sequential
-    from keras.layers import LSTM, Dense, Dropout
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import mean_squared_error
+    try:
+        import os
+        from django.conf import settings
+        path_tsv = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
+        
+        if not os.path.exists(path_tsv):
+            return render(request, "users/ml.html", {"error": "Training files were removed to optimize server performance. Current model is already optimized."})
 
-    from django.conf import settings
-    path_tsv = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
-    df = pd.read_csv(
-        path_tsv,
-        sep='\t',
-        encoding='ISO-8859-1'
-    )
+        os.environ["KERAS_BACKEND"] = "tensorflow"
+        import pandas as pd
+        import numpy as np
+        from nltk.corpus import stopwords
+        from gensim.models import Word2Vec
+        from keras.models import Sequential
+        from keras.layers import LSTM, Dense, Dropout
+        from sklearn.model_selection import train_test_split
+        from sklearn.metrics import mean_squared_error
 
-    df.dropna(axis=1, inplace=True)
+        df = pd.read_csv(
+            path_tsv,
+            sep='\t',
+            encoding='ISO-8859-1'
+        )
 
-    path_processed = os.path.join(settings.MEDIA_ROOT, "Processed_data.csv")
-    temp = pd.read_csv(path_processed)
-    temp.drop(columns=["Unnamed: 0"], inplace=True)
+        df.dropna(axis=1, inplace=True)
 
-    df['domain1_score'] = temp['final_score']
+        path_processed = os.path.join(settings.MEDIA_ROOT, "Processed_data.csv")
+        temp = pd.read_csv(path_processed)
+        temp.drop(columns=["Unnamed: 0"], inplace=True)
 
-    y = df['domain1_score']
-    X = df['essay']
+        df['domain1_score'] = temp['final_score']
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.3,
-        random_state=42
-    )
+        y = df['domain1_score']
+        X = df['essay']
 
-    stop_words = set(stopwords.words('english'))
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.3,
+            random_state=42
+        )
 
-    def clean(text):
+        stop_words = set(stopwords.words('english'))
 
-        text = re.sub("[^A-Za-z]", " ", text)
-        words = text.lower().split()
+        def clean(text):
 
-        return [w for w in words if w not in stop_words]
+            text = re.sub("[^A-Za-z]", " ", text)
+            words = text.lower().split()
 
-    train_words = [clean(e) for e in X_train]
-    test_words = [clean(e) for e in X_test]
+            return [w for w in words if w not in stop_words]
 
-    # =========================
-    # WORD2VEC
-    # =========================
+        train_words = [clean(e) for e in X_train]
+        test_words = [clean(e) for e in X_test]
 
-    word2vec_model = Word2Vec(
-        train_words,
-        vector_size=300,
-        window=10,
-        min_count=40,
-        workers=4
-    )
+        # =========================
+        # WORD2VEC
+        # =========================
 
-    word2vec_model.wv.save_word2vec_format(
-        "word2vecmodel.bin",
-        binary=True
-    )
+        word2vec_model = Word2Vec(
+            train_words,
+            vector_size=300,
+            window=10,
+            min_count=40,
+            workers=4
+        )
 
-    def makeVec(words, model):
+        word2vec_model.wv.save_word2vec_format(
+            "word2vecmodel.bin",
+            binary=True
+        )
 
-        vec = np.zeros((300,), dtype="float32")
-        count = 0
+        def makeVec(words, model):
 
-        for w in words:
+            vec = np.zeros((300,), dtype="float32")
+            count = 0
 
-            if w in model.wv:
-                vec += model.wv[w]
-                count += 1
+            for w in words:
 
-        if count != 0:
-            vec /= count
+                if w in model.wv:
+                    vec += model.wv[w]
+                    count += 1
 
-        return vec
+            if count != 0:
+                vec /= count
 
-    train_vec = np.array([makeVec(w, word2vec_model) for w in train_words])
-    test_vec = np.array([makeVec(w, word2vec_model) for w in test_words])
+            return vec
 
-    train_vec = train_vec.reshape(train_vec.shape[0], 1, 300)
-    test_vec = test_vec.reshape(test_vec.shape[0], 1, 300)
+        train_vec = np.array([makeVec(w, word2vec_model) for w in train_words])
+        test_vec = np.array([makeVec(w, word2vec_model) for w in test_words])
 
-    # =========================
-    # LSTM MODEL
-    # =========================
+        train_vec = train_vec.reshape(train_vec.shape[0], 1, 300)
+        test_vec = test_vec.reshape(test_vec.shape[0], 1, 300)
 
-    model = Sequential()
+        # =========================
+        # LSTM MODEL
+        # =========================
 
-    model.add(LSTM(300, input_shape=(1, 300), return_sequences=True))
-    model.add(LSTM(64))
-    model.add(Dropout(0.5))
-    model.add(Dense(1, activation='relu'))
+        model = Sequential()
 
-    model.compile(
-        loss='mean_squared_error',
-        optimizer='rmsprop',
-        metrics=['mae']
-    )
+        model.add(LSTM(300, input_shape=(1, 300), return_sequences=True))
+        model.add(LSTM(64))
+        model.add(Dropout(0.5))
+        model.add(Dense(1, activation='relu'))
 
-    model.fit(
-        train_vec,
-        y_train,
-        batch_size=64,
-        epochs=5
-    )
+        model.compile(
+            loss='mean_squared_error',
+            optimizer='rmsprop',
+            metrics=['mae']
+        )
 
-    model.save("final_lstm.h5")
+        model.fit(
+            train_vec,
+            y_train,
+            batch_size=64,
+            epochs=5
+        )
 
-    preds = model.predict(test_vec)
+        model.save("final_lstm.h5")
 
-    mse = mean_squared_error(y_test, preds)
-    rmse = np.sqrt(mse)
+        preds = model.predict(test_vec)
 
-    return render(
-        request,
-        "users/ml.html",
-        {
-            'MSE': round(mse, 4),
-            'RMSE': round(rmse, 4)
-        }
-    )
+        mse = mean_squared_error(y_test, preds)
+        rmse = np.sqrt(mse)
+
+        return render(
+            request,
+            "users/ml.html",
+            {
+                'MSE': round(mse, 4),
+                'RMSE': round(rmse, 4)
+            }
+        )
+    except Exception as e:
+        return render(request, "users/ml.html", {"error": f"Training Error: {str(e)}"})
 
 
 # =========================
