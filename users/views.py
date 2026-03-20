@@ -12,8 +12,11 @@ from nltk.corpus import stopwords
 from gensim.models import Word2Vec
 from gensim.models import KeyedVectors
 
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+import os
+os.environ["KERAS_BACKEND"] = "tensorflow"
+import keras
+from keras.models import Sequential, load_model
+from keras.layers import LSTM, Dense, Dropout
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
