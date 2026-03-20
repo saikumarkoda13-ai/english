@@ -31,6 +31,11 @@ if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
 
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'https://english-1-l7zg.onrender.com']
 
+# Tell Django it's behind a secure proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 
