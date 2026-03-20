@@ -8,7 +8,6 @@ def AdminLoginCheck(request):
     if request.method == 'POST':
         usrid = request.POST.get('loginid')
         pswd = request.POST.get('pswd')
-        print("User ID is = ", usrid)
         if usrid == 'admin' and pswd == 'admin':
             return render(request, 'admins/AdminHome.html')
         else:
@@ -25,9 +24,8 @@ def RegisterUsersView(request):
 
 def ActivaUsers(request):
     if request.method == 'GET':
-        id = request.GET.get('uid')
+        uid = request.GET.get('uid')
         status = 'activated'
-        print("PID = ", id, status)
-        UserRegistrationModel.objects.filter(id=id).update(status=status)
+        UserRegistrationModel.objects.filter(id=uid).update(status=status)
         data = UserRegistrationModel.objects.all()
         return render(request,'admins/viewregisterusers.html',{'data':data})
