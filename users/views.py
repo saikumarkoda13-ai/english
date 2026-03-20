@@ -255,66 +255,65 @@ def prediction(request):
     score = None
 
     if request.method == "POST":
-        import numpy as np
-        import nltk
-        nltk.download('stopwords', quiet=True)
-        from nltk.corpus import stopwords
-        from PIL import Image
-        import pytesseract
-        
-        # Load models lazily
-        word2vec_model, lstm_model = get_ai_models()
+        try:
+            import numpy as np
+            import nltk
+            nltk.download('stopwords', quiet=True)
+            from nltk.corpus import stopwords
+            from PIL import Image
+            import pytesseract
+            
+            # Load models lazily
+            word2vec_model, lstm_model = get_ai_models()
 
-        final_text = request.POST.get("final_text")
-        image_file = request.FILES.get("essay_image")
+            final_text = request.POST.get("final_text")
+            image_file = request.FILES.get("essay_image")
 
-        # OCR
-        if image_file:
+            # OCR
+            if image_file:
+                img = Image.open(image_file)
+                final_text = pytesseract.image_to_string(img)
 
-            img = Image.open(image_file)
-            final_text = pytesseract.image_to_string(img)
+            if not final_text:
+                return render(
+                    request,
+                    "users/predictForm.html",
+                    {"score": "Please enter essay text"}
+                )
 
-        if not final_text:
+            stop_words = set(stopwords.words("english"))
+
+            text = re.sub("[^A-Za-z]", " ", final_text)
+            words = text.lower().split()
+            words = [w for w in words if w not in stop_words]
+
+            vec = np.zeros((300,), dtype="float32")
+            count = 0
+
+            for w in words:
+                if w in word2vec_model.key_to_index:
+                    vec += word2vec_model[w]
+                    count += 1
+
+            if count == 0:
+                score = "No valid words found"
+            else:
+                vec /= count
+                vec = vec.reshape(1, 1, 300)
+                pred = lstm_model.predict(vec)
+                score = str(round(float(pred[0][0])))
 
             return render(
                 request,
                 "users/predictForm.html",
-                {"score": "Please enter essay text"}
+                {"score": score}
             )
-
-        stop_words = set(stopwords.words("english"))
-
-        text = re.sub("[^A-Za-z]", " ", final_text)
-        words = text.lower().split()
-        words = [w for w in words if w not in stop_words]
-
-        vec = np.zeros((300,), dtype="float32")
-        count = 0
-
-        for w in words:
-
-            if w in word2vec_model.key_to_index:
-
-                vec += word2vec_model[w]
-                count += 1
-
-        if count == 0:
-
-            score = "No valid words found"
-
-        else:
-
-            vec /= count
-            vec = vec.reshape(1, 1, 300)
-
-            pred = lstm_model.predict(vec)
-
-            score = str(round(float(pred[0][0])))
-
-        return render(
-            request,
-            "users/predictForm.html",
-            {"score": score}
-        )
+        except Exception as e:
+            # If any exception occurs, catch it and display it on the page instead of 500 error!
+            return render(
+                request,
+                "users/predictForm.html",
+                {"score": f"Server Error Caught: {str(e)}"}
+            )
 
     return render(request, "users/predictForm.html")
