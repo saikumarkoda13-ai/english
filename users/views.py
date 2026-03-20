@@ -1,14 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib import messages
 
-# from .forms import UserRegistrationForm
-# from .models import UserRegistrationModel
-# import pandas as pd
-# import numpy as np
 import re
-# from nltk.corpus import stopwords
-# from gensim.models import Word2Vec
-# from gensim.models import KeyedVectors
 
 # Global variable for model caching
 _MODEL_CACHE = {}
