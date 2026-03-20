@@ -254,7 +254,8 @@ def get_ai_models():
         import tensorflow as tf
         from keras.models import load_model
         path = os.path.join(settings.BASE_DIR, "final_lstm.h5")
-        _MODEL_CACHE["lstm"] = load_model(path, safe_mode=False)
+        # compile=False saves memory and avoids version mismatch errors during inference
+        _MODEL_CACHE["lstm"] = load_model(path, compile=False, safe_mode=False)
         gc.collect() # Clean up after TensorFlow initialization
         
     return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm"]
@@ -286,6 +287,8 @@ def prediction(request):
 
             # OCR
             if image_file:
+                # Specify fixed tesseract path for Render Linux environment
+                pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
                 img = Image.open(image_file)
                 final_text = pytesseract.image_to_string(img)
                 del img # Clear image data from memory ASAP
