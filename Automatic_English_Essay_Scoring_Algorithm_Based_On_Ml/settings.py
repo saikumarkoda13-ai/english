@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['*']
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
 
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'https://english-1-l7zg.onrender.com']
+
 
 # Application definition
 
