@@ -22,6 +22,7 @@ from users import views as usr
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", mainView.index, name="index"),
+    path("health/", mainView.index, name="health"),
     path("index/", mainView.index, name="index"),
     path("AdminLogin/", mainView.AdminLogin, name="AdminLogin"),
     path("UserLogin/", mainView.UserLogin, name="UserLogin"),
