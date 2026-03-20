@@ -246,19 +246,18 @@ def get_ai_models():
         from gensim.models import KeyedVectors
         path = os.path.join(settings.BASE_DIR, "word2vecmodel.bin")
         _MODEL_CACHE["word2vec"] = KeyedVectors.load_word2vec_format(path, binary=True)
-        gc.collect() # Clean up after loading large binary
+        gc.collect() 
         
-    if "lstm" not in _MODEL_CACHE:
-        os.environ["KERAS_BACKEND"] = "tensorflow"
-        # We import ONLY what we need for loading
-        import tensorflow as tf
-        from keras.models import load_model
-        path = os.path.join(settings.BASE_DIR, "final_lstm.h5")
-        # compile=False saves memory and avoids version mismatch errors during inference
-        _MODEL_CACHE["lstm"] = load_model(path, compile=False, safe_mode=False)
-        gc.collect() # Clean up after TensorFlow initialization
+    if "lstm_interp" not in _MODEL_CACHE:
+        # Use LiteRT (TFLite) which is 100x lighter than full TensorFlow
+        import ai_edge_litert.interpreter as tflite
+        path = os.path.join(settings.BASE_DIR, "final_lstm.tflite")
+        interpreter = tflite.Interpreter(model_path=path)
+        interpreter.allocate_tensors()
+        _MODEL_CACHE["lstm_interp"] = interpreter
+        gc.collect() 
         
-    return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm"]
+    return _MODEL_CACHE["word2vec"], _MODEL_CACHE["lstm_interp"]
 
 
 # =========================
@@ -269,7 +268,7 @@ def prediction(request):
     try:
         score = None
         if request.method == "POST":
-            # Manual trigger for GC to clear any previous overhead
+            # Manual trigger for GC
             gc.collect()
             
             import numpy as np
@@ -279,19 +278,19 @@ def prediction(request):
             from PIL import Image
             import pytesseract
             
-            # Load models lazily with internal GC
-            word2vec_model, lstm_model = get_ai_models()
+            # Load models lazily (LiteRT Version)
+            word2vec_model, interpreter = get_ai_models()
 
             final_text = request.POST.get("final_text")
             image_file = request.FILES.get("essay_image")
 
             # OCR
             if image_file:
-                # Specify fixed tesseract path for Render Linux environment
+                # Specify fixed tesseract path for Render
                 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
                 img = Image.open(image_file)
                 final_text = pytesseract.image_to_string(img)
-                del img # Clear image data from memory ASAP
+                del img 
                 gc.collect()
 
             if not final_text:
@@ -319,11 +318,19 @@ def prediction(request):
                 score = "No valid words found"
             else:
                 vec /= count
-                vec = vec.reshape(1, 1, 300)
-                pred = lstm_model.predict(vec)
+                # TFLite Inference
+                input_data = vec.reshape(1, 1, 300).astype(np.float32)
+                
+                input_details = interpreter.get_input_details()
+                output_details = interpreter.get_output_details()
+                
+                interpreter.set_tensor(input_details[0]['index'], input_data)
+                interpreter.invoke()
+                
+                pred = interpreter.get_tensor(output_details[0]['index'])
                 score = str(round(float(pred[0][0])))
             
-            # Final Cleanup before rendering
+            # Final Cleanup 
             del words
             gc.collect()
 
@@ -337,7 +344,5 @@ def prediction(request):
         return render(request, "users/predictForm.html")
         
     except Exception as e:
-        # Catch any error (even on GET) and display it on the page instead of 500!
-        # If it's a memory issue, we want to know
         gc.collect()
         return HttpResponse(f"System Resource Error: {str(e)}. (Likely Render RAM Limit 512MB reached).")

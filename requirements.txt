@@ -3,8 +3,7 @@ pandas
 numpy
 nltk
 gensim
-tensorflow-cpu==2.16.1
-keras==3.13.2
+ai-edge-litert
 h5py
 scikit-learn
 Pillow
