@@ -1,3 +1,4 @@
+# LAZY LOADING VERSION 3.2 - MEMORY OPTIMIZED
 from django.shortcuts import render, HttpResponse
 from django.contrib import messages
 
