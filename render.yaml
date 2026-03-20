@@ -1,12 +1,10 @@
 services:
   - type: web
     name: essay-scoring-app
-    env: python
-    buildCommand: "./render-build.sh"
-    startCommand: "gunicorn Automatic_English_Essay_Scoring_Algorithm_Based_On_Ml.wsgi:application"
+    env: docker
+    plan: free
+    region: oregon 
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.10.0
       - key: DATABASE_URL
         fromDatabase:
           name: essay-db
