@@ -4,7 +4,6 @@ numpy
 nltk
 gensim
 ai-edge-litert
-h5py
 scikit-learn
 Pillow
 pytesseract
