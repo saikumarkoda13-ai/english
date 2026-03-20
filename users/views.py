@@ -63,6 +63,8 @@ def UserHome(request):
 # =========================
 # DATASET VIEW
 # =========================
+def DatasetView(request):
+    import pandas as pd
     from django.conf import settings
     import os
     path = os.path.join(settings.MEDIA_ROOT, "training_set_rel3.tsv")
