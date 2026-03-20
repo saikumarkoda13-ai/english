@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block contents %}
+<div class="container text-center hero-section fade-in-up">
+    <h1 class="hero-title">Elevate Your Essay Scoring</h1>
+    <p class="hero-subtitle">Experience the future of automated English essay evaluation with our advanced LSTM-based scoring algorithm. Precise, fast, and reliable.</p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'UserLogin' %}" class="btn btn-primary d-flex align-items-center gap-2">
+            <i class="bi bi-rocket-takeoff"></i> Get Started
+        </a>
+        <a href="{% url 'AdminLogin' %}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <i class="bi bi-shield-lock"></i> Staff Portal
+        </a>
+    </div>
+    
+    <div class="mt-5 pt-5 row justify-content-center">
+         <div class="col-md-3 mb-4">
+             <div class="modern-card p-4">
+                 <i class="bi bi-cpu text-primary mb-3 fs-1"></i>
+                 <h5>AI Extraction</h5>
+                 <p class="text-muted small">Automatic text extraction from images using OCR technology.</p>
+             </div>
+         </div>
+         <div class="col-md-3 mb-4">
+            <div class="modern-card p-4">
+                <i class="bi bi-graph-up-arrow text-primary mb-3 fs-1"></i>
+                <h5>Deep Learning</h5>
+                <p class="text-muted small">Powered by LSTM networks for deep semantic understanding.</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="modern-card p-4">
+                <i class="bi bi-lightning text-primary mb-3 fs-1"></i>
+                <h5>Real-time Results</h5>
+                <p class="text-muted small">Get your essay scores and analysis in a matter of seconds.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

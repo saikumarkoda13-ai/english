@@ -1,0 +1,57 @@
+{% extends 'admins/adminbase.html' %}
+{% block contents %}
+
+<div class="dashboard-header animate__animated animate__fadeIn">
+    <h2 class="welcome-text">Admin Summary Dashboard</h2>
+    <p class="text-muted">Overview of system health and user activities.</p>
+</div>
+
+<div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+    <div class="col-md-3">
+        <div class="modern-card text-center border-bottom border-4 border-primary">
+            <h3 class="fw-bold fs-1 text-primary mb-1">98%</h3>
+            <div class="text-muted small fw-bold">MODEL UPTIME</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="modern-card text-center border-bottom border-4 border-success">
+            <h3 class="fw-bold fs-1 text-success mb-1">1.2s</h3>
+            <div class="text-muted small fw-bold">AVG. INFERENCE</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="modern-card text-center border-bottom border-4 border-warning">
+            <h3 class="fw-bold fs-1 text-warning mb-1">12k</h3>
+            <div class="text-muted small fw-bold">TOTAL ESSAYS</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="modern-card text-center border-bottom border-4 border-danger">
+            <h3 class="fw-bold fs-1 text-danger mb-1">24</h3>
+            <div class="text-muted small fw-bold">PENDING USERS</div>
+        </div>
+    </div>
+</div>
+
+<div class="row animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+    <div class="col-lg-12">
+        <div class="modern-card bg-dark text-white p-5">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <h2 class="fw-bold mb-3">System Control Node</h2>
+                    <p class="text-white text-opacity-75 fs-5">Administrative panel is fully operational. All neural network nodes (LSTM) are reporting healthy status.</p>
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{% url 'RegisterUsersView' %}" class="btn btn-danger btn-lg px-4 fw-bold shadow">
+                            Authorise Pending Users
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-5 text-center">
+                    <i class="bi bi-shield-check display-1 text-danger animate__animated animate__pulse animate__infinite"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

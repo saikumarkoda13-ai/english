@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contents %}
+
+<div class="container animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-10">
+            <div class="modern-card">
+                <div class="text-center mb-5">
+                    <div class="d-inline-block p-3 rounded-circle bg-success bg-opacity-10 mb-3">
+                        <i class="bi bi-person-plus-fill fs-1 text-success"></i>
+                    </div>
+                    <h2 class="h3 fw-bold mb-1">Create Account</h2>
+                    <p class="text-muted">Join the most advanced essay scoring platform</p>
+                </div>
+
+                <form action="{% url 'UserRegisterActions' %}" method="POST" class="row g-3">
+                    {% csrf_token %}
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">Full Name</label>
+                        {{ form.name }}
+                        <div class="form-text mt-1">Characters only</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">Login ID</label>
+                        {{ form.loginid }}
+                        <div class="form-text mt-1">Unique username</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">Email Address</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">Mobile Number</label>
+                        {{ form.mobile }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-semibold small">Password</label>
+                        {{ form.password }}
+                        <div class="form-text mt-1">Min 8 chars, 1 uppercase, 1 lowercase, 1 number</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">City</label>
+                        {{ form.city }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold small">State</label>
+                        {{ form.state }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-semibold small">Locality</label>
+                        {{ form.locality }}
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label fw-semibold small">Detailed Address</label>
+                        {{ form.address }}
+                    </div>
+
+                    {{ form.status }}
+
+                    <div class="col-12 d-grid">
+                        <button class="btn btn-primary py-3 fw-bold" type="submit" style="background-color: var(--accent-color) !important; border:none;">
+                            Register Official Account
+                        </button>
+                    </div>
+
+                    {% if messages %}
+                        <div class="col-12 mt-3">
+                            {% for message in messages %}
+                                <div class="alert {% if 'success' in message.tags %}alert-success{% else %}alert-danger{% endif %} py-2 px-3 small border-0 rounded-3">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="text-muted small">Already have an account? <a href="{% url 'UserLogin' %}" class="text-primary fw-bold text-decoration-none">Sign in instead</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling for Django form widgets */
+    form input[type="text"], 
+    form input[type="password"], 
+    form input[type="email"], 
+    form textarea {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #dee2e6;
+        appearance: none;
+        border-radius: 8px;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    
+    form input:focus {
+        border-color: #0866FF;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(8, 102, 255, 0.1);
+    }
+
+    form textarea {
+        height: 100px;
+    }
+</style>
+
+{% endblock %}

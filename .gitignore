@@ -1,0 +1,20 @@
+db.sqlite3
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+media/Processed_data.csv
+media/training_set_rel3.tsv
+media/image.png
+.env
+.vscode/
+.idea/
+*.h5
+*.bin
+# But we actually want to keep final_lstm.h5 and word2vecmodel.bin if they are small enough
+!final_lstm.h5
+!word2vecmodel.bin

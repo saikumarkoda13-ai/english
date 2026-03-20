@@ -1,0 +1,1 @@
+web: gunicorn Automatic_English_Essay_Scoring_Algorithm_Based_On_Ml.wsgi

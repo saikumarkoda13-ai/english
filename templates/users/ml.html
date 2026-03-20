@@ -1,0 +1,72 @@
+{% extends 'users/userbase.html' %}
+{% block contents %}
+
+<div class="dashboard-header animate__animated animate__fadeIn">
+    <h2 class="welcome-text">Model Training Stats</h2>
+    <p class="text-muted">Regression performance metrics from the latest training cycle.</p>
+</div>
+
+<div class="row g-4 animate__animated animate__fadeInUp">
+    <div class="col-md-6">
+        <div class="modern-card h-100">
+            <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart-fill text-primary"></i> Latest Epoch Results
+            </h5>
+            
+            <div class="mb-4 p-4 bg-light bg-opacity-50 rounded-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-muted small">MEAN ABSOLUTE ERROR (MAE)</span>
+                    <span class="badge bg-primary fs-6">{{ MSE|default:"Calculating..." }}</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary" style="width: 75%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-light bg-opacity-50 rounded-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-muted small">ROOT MEAN SQUARED ERROR (RMSE)</span>
+                    <span class="badge bg-dark fs-6">{{ RMSE|default:"Calculating..." }}</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-dark" style="width: 60%"></div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <div class="text-muted small mb-3">These metrics indicate the difference between predicted score and human-graded score. Lower values indicate higher model precision.</div>
+                <a href="{% url 'prediction' %}" class="btn btn-action w-100 py-3">
+                    Run New Prediction
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="modern-card bg-primary text-white p-5 border-0">
+            <h3 class="fw-bold mb-3">Model Architecture</h3>
+            <p class="text-white text-opacity-75 mb-4">Our system utilizes a bi-lateral LSTM (Long Short-Term Memory) network optimized for semantic sequence mapping.</p>
+            
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-white bg-opacity-20 p-2"><i class="bi bi-check2"></i></div>
+                    <span>Word2Vec 300-dimension embedding</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-white bg-opacity-20 p-2"><i class="bi bi-check2"></i></div>
+                    <span>Dropout Layer (0.5 freq)</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-white bg-opacity-20 p-2"><i class="bi bi-check2"></i></div>
+                    <span>Relu Activation Dense Output</span>
+                </div>
+            </div>
+            
+            <div class="mt-5 pt-4 text-center border-top border-white border-opacity-10">
+                <i class="bi bi-cpu fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{%extends 'users/userbase.html'%}
+{%load static%}
+{%block contents%}
+
+
+    <section class="about full-screen d-lg-flex justify-content-center align-items-center" id="about">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-7 col-md-12 col-12 d-flex align-items-center">
+                    
+                    <table>
+                        <tr>
+                            <td>mean_absolute_error </td>
+                            <td>: {{mean_absolute_error}}</td>
+                        </tr>
+                        <tr>
+                            <td>LOSS</td>
+                            <td>: {{loss}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-lg-5 col-md-12 col-12">
+                    <div class="about-image svg">
+                        <img src="{%static 'images/undraw/undraw_software_engineer_lvl5.svg'%}" class="img-fluid" alt="svg image">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+{%endblock%}

@@ -1,0 +1,69 @@
+{% extends 'users/userbase.html' %}
+{% block contents %}
+
+<div class="dashboard-header animate__animated animate__fadeIn">
+    <h2 class="welcome-text">Hi, {{ request.session.loggeduser }}! 👋</h2>
+    <p class="text-muted">Welcome back to your essay scoring dashboard. What would you like to do today?</p>
+</div>
+
+<div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+    <div class="col-md-6">
+        <div class="modern-card h-100 border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="p-3 bg-primary bg-opacity-10 rounded-3">
+                    <i class="bi bi-pencil-square fs-3 text-primary"></i>
+                </div>
+                <span class="badge bg-primary rounded-pill">Analyze Now</span>
+            </div>
+            <h4 class="fw-bold">Score New Essay</h4>
+            <p class="text-muted">Use our high-precision LSTM model to evaluate your essay. Supports direct text entry, image uploads (OCR), and voice recording.</p>
+            <a href="{% url 'prediction' %}" class="btn btn-action mt-auto d-inline-flex align-items-center gap-2">
+                Start Analysis <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="modern-card h-100">
+            <div class="mb-4">
+                <i class="bi bi-journal-text fs-3 text-success"></i>
+            </div>
+            <h5 class="fw-bold">Training Data</h5>
+            <p class="text-muted small">Browse the official dataset used to train our AI model.</p>
+            <a href="{% url 'DatasetView' %}" class="btn btn-outline-secondary btn-sm w-100">View Dataset</a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="modern-card h-100">
+            <div class="mb-4">
+                <i class="bi bi-cpu-fill fs-3 text-warning"></i>
+            </div>
+            <h5 class="fw-bold">Model Performance</h5>
+            <p class="text-muted small">Check the latest regression metrics for our training phase.</p>
+            <a href="{% url 'training' %}" class="btn btn-outline-secondary btn-sm w-100">View Stats</a>
+        </div>
+    </div>
+</div>
+
+<div class="modern-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+    <h5 class="fw-bold mb-4">Account Information</h5>
+    <div class="row text-center">
+        <div class="col-md-3 border-end">
+            <div class="text-muted small">Status</div>
+            <div class="fw-bold text-success">Active <i class="bi bi-check-circle-fill ms-1"></i></div>
+        </div>
+        <div class="col-md-3 border-end">
+            <div class="text-muted small">Login ID</div>
+            <div class="fw-bold">{{ request.session.loginid }}</div>
+        </div>
+        <div class="col-md-3 border-end">
+            <div class="text-muted small">Current Model</div>
+            <div class="fw-bold">LSTM-v4.11</div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-muted small">Accuracy Metric</div>
+            <div class="fw-bold text-primary">RMSE/MAE</div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

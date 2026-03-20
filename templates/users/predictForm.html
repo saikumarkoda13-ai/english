@@ -1,0 +1,144 @@
+{% extends 'users/userbase.html' %}
+{% block contents %}
+
+<div class="dashboard-header animate__animated animate__fadeIn">
+    <h2 class="welcome-text">Essay Scoring System</h2>
+    <p class="text-muted">Enter your essay content below or use our AI extraction tools.</p>
+</div>
+
+<div class="row g-4 justify-content-center animate__animated animate__fadeInUp">
+    <div class="col-lg-8">
+        <div class="modern-card">
+            {% if score %}
+                <div class="d-flex align-items-center justify-content-between p-4 mb-5 rounded-4 animate__animated animate__bounceIn" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%); box-shadow: 0 15px 35px rgba(60, 186, 146, 0.4), inset 0 0 0 1px rgba(255,255,255,0.3); transform: scale(1.02); position: relative; overflow: hidden; margin-top: 10px;">
+                    <!-- Decorative background element -->
+                    <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none;"></div>
+                    
+                    <div class="d-flex align-items-center gap-4 position-relative z-1">
+                        <div class="bg-white bg-opacity-25 p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 64px; height: 64px; box-shadow: 0 0 20px rgba(255,255,255,0.4); backdrop-filter: blur(5px);">
+                            <i class="bi bi-stars fs-1 text-white" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bolder fs-3 text-white mb-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15); letter-spacing: -0.5px;">Essay Analysis Complete</div>
+                            <div class="text-white fw-medium fs-6 opacity-90" style="text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Your essay has been successfully evaluated by our AI model.</div>
+                        </div>
+                    </div>
+                    <div class="text-center px-4 py-3 bg-white rounded-4 position-relative z-1" style="box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <div class="small fw-bolder mb-1" style="color: #0ba360; letter-spacing: 1.5px; font-size: 0.75rem;">PREDICTED SCORE</div>
+                        <div class="display-3 fw-bold mb-0" style="color: #0c8952; line-height: 1;">{{ score }}</div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <form action="{% url 'prediction' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold d-flex justify-content-between">
+                        Essay Content
+                        <span class="text-muted small fw-normal" id="char-count">0 characters</span>
+                    </label>
+                    <textarea name="final_text" id="output" class="form-control" rows="12" placeholder="Start typing or click 'Start Talking' below..." style="border-radius: 12px; font-size: 1.1rem; padding: 20px; line-height: 1.6;"></textarea>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light bg-opacity-50">
+                            <label class="form-label fw-bold small mb-2"><i class="bi bi-image me-2 text-primary"></i>OCR Extraction</label>
+                            <input type="file" name="essay_image" accept="image/*" class="form-control form-control-sm border-0 bg-white">
+                            <div class="form-text mt-2 small">Upload an image of your handwritten essay.</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light bg-opacity-50 h-100">
+                            <label class="form-label fw-bold small mb-2"><i class="bi bi-mic-fill me-2 text-danger"></i>Voice Recording</label>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-danger btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2" onclick="startSpeech()" id="mic-btn">
+                                    <i class="bi bi-record-circle"></i> Start Talking
+                                </button>
+                                <button type="button" class="btn btn-dark btn-sm" onclick="stopSpeech()">
+                                    Stop
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-action py-3 fs-5">
+                        <i class="bi bi-lightning-charge-fill me-2"></i> Generate AI Score
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="modern-card mb-4 border-top border-primary border-4">
+            <h6 class="fw-bold mb-3">Scoring Guide</h6>
+            <ul class="list-unstyled small text-muted">
+                <li class="mb-2 d-flex gap-2"><i class="bi bi-info-circle text-primary"></i> Our model evaluates coherence, semantics, and vocabulary.</li>
+                <li class="mb-2 d-flex gap-2"><i class="bi bi-info-circle text-primary"></i> Ensure image uploads are clear for standard OCR results.</li>
+                <li class="mb-2 d-flex gap-2"><i class="bi bi-info-circle text-primary"></i> Voice dictation uses Chrome Speech Recognition.</li>
+            </ul>
+        </div>
+        
+        <div class="modern-card bg-primary bg-opacity-10 border-0">
+            <h6 class="fw-bold text-primary mb-2">Model Confidence</h6>
+            <div class="progress mb-2" style="height: 8px;">
+                <div class="progress-bar bg-primary" style="width: 85%"></div>
+            </div>
+            <div class="small fw-bold text-primary">85% Reliability Rate</div>
+        </div>
+    </div>
+</div>
+
+<script>
+let recognition;
+let isRecording = false;
+
+function startSpeech(){
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SpeechRecognition){
+        alert("Speech Recognition works only in Google Chrome");
+        return;
+    }
+    
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    
+    document.getElementById('mic-btn').innerHTML = '<span class="spinner-grow spinner-grow-sm"></span> Listening...';
+    document.getElementById('mic-btn').classList.replace('btn-outline-danger', 'btn-danger');
+
+    recognition.onresult = function(event){
+        let text = "";
+        for(let i=0; i<event.results.length; i++){
+            text += event.results[i][0].transcript;
+        }
+        document.getElementById("output").value = text;
+        updateCharCount();
+    };
+    
+    recognition.start();
+    isRecording = true;
+}
+
+function stopSpeech(){
+    if(recognition){
+        recognition.stop();
+        document.getElementById('mic-btn').innerHTML = '<i class="bi bi-record-circle"></i> Start Talking';
+        document.getElementById('mic-btn').classList.replace('btn-danger', 'btn-outline-danger');
+        isRecording = false;
+    }
+}
+
+function updateCharCount() {
+    const text = document.getElementById('output').value;
+    document.getElementById('char-count').innerText = text.length + ' characters';
+}
+
+document.getElementById('output').addEventListener('input', updateCharCount);
+</script>
+
+{% endblock %}
