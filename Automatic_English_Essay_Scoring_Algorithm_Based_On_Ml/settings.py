@@ -103,7 +103,7 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this with your actual local database configuration
-        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db_app.sqlite3'),
         conn_max_age=600
     )
 }
