@@ -32,4 +32,4 @@ EXPOSE 8000
 RUN python -c "import nltk; nltk.download('stopwords')"
 
 # Run migrations and start gunicorn
-CMD python manage.py migrate --no-input && gunicorn Automatic_English_Essay_Scoring_Algorithm_Based_On_Ml.wsgi:application --bind 0.0.0.0:8000
+CMD python manage.py migrate --no-input && gunicorn Automatic_English_Essay_Scoring_Algorithm_Based_On_Ml.wsgi:application --bind 0.0.0.0:${PORT:-8000}

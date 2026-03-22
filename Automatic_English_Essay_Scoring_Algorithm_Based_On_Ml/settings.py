@@ -26,8 +26,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-!!t7r_3hu(9m7sp6@(f5i
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    # Add trusted origins for CSRF in production
+    CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}', 'https://*.onrender.com']
 
 # Security settings
 SESSION_COOKIE_SECURE = not DEBUG
