@@ -2,64 +2,75 @@
 {% load static %}
 {% block contents %}
 
-<div class="container animate__animated animate__fadeIn">
-    <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-8">
+<div class="container flex-grow-1 d-flex align-items-center justify-content-center animate__animated animate__fadeIn">
+    <div class="row w-100 justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
             <div class="modern-card">
-                <div class="text-center mb-4">
-                    <div class="d-inline-block p-3 rounded-circle bg-primary bg-opacity-10 mb-3">
+                <div class="text-center mb-5">
+                    <div class="d-inline-flex p-4 rounded-circle bg-primary bg-opacity-10 mb-4 animate__animated animate__zoomIn">
                         <i class="bi bi-person-fill fs-1 text-primary"></i>
                     </div>
-                    <h2 class="h3 fw-bold mb-1">User Login</h2>
-                    <p class="text-muted">Enter your credentials to access your dashboard</p>
+                    <h2 class="h3 fw-bold mb-2">Welcome Back</h2>
+                    <p class="text-muted">Enter your credentials to access AES</p>
                 </div>
 
                 <form action="{% url 'UserLoginCheck' %}" method="POST" class="needs-validation">
                     {% csrf_token %}
                     
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Login ID</label>
+                        <label class="form-label fw-semibold small text-uppercase tracking-wider">Login ID</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-transparent border-end-0">
-                                <i class="bi bi-person"></i>
+                            <span class="input-group-text bg-light border-end-0 px-3">
+                                <i class="bi bi-person text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 ps-0 p-3" name="loginid" required placeholder="example_id">
+                            <input type="text" class="form-control bg-light border-start-0 ps-0 py-3" name="loginid" required placeholder="your_username">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Password</label>
+                        <label class="form-label fw-semibold small text-uppercase tracking-wider">Password</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-transparent border-end-0">
-                                <i class="bi bi-lock"></i>
+                            <span class="input-group-text bg-light border-end-0 px-3">
+                                <i class="bi bi-lock text-muted"></i>
                             </span>
-                            <input type="password" class="form-control border-start-0 ps-0 p-3" name="pswd" required placeholder="••••••••">
+                            <input type="password" class="form-control bg-light border-start-0 ps-0 py-3" name="pswd" required placeholder="••••••••">
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 mb-4">
-                        <button class="btn btn-primary d-flex justify-content-center align-items-center gap-2" type="submit">
-                            <span>Sign In</span>
+                        <button class="btn btn-primary d-flex justify-content-center align-items-center gap-2 py-3" type="submit">
+                            <span class="h6 mb-0 fw-bold">Sign In to Dashboard</span>
                             <i class="bi bi-arrow-right"></i>
                         </button>
                     </div>
 
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small border-0 rounded-3">
+                            <div class="alert alert-danger d-flex align-items-center gap-2 py-3 px-4 small border-0 rounded-4 animate__animated animate__shakeX">
                                 <i class="bi bi-exclamation-circle-fill"></i>
                                 <span>{{ message }}</span>
                             </div>
                         {% endfor %}
                     {% endif %}
 
-                    <div class="text-center mt-4">
-                        <p class="text-muted small">Don't have an account? <a href="{% url 'UserRegister' %}" class="text-primary fw-bold text-decoration-none">Register here</a></p>
+                    <div class="text-center mt-5">
+                        <p class="text-muted small">Don't have an account? <a href="{% url 'UserRegister' %}" class="text-primary fw-bold text-decoration-none hover-underline">Create Account</a></p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .tracking-wider { letter-spacing: 0.05em; }
+    .hover-underline:hover { text-decoration: underline !important; }
+    .input-group-text { border-color: transparent; }
+    .form-control:focus { 
+        background-color: #fff !important;
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 4px rgba(8, 102, 255, 0.1) !important;
+    }
+</style>
 
 {% endblock %}

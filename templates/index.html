@@ -1,39 +1,87 @@
 {% extends 'base.html' %}
 {% block contents %}
-<div class="container text-center hero-section fade-in-up">
-    <h1 class="hero-title">Elevate Your Essay Scoring</h1>
-    <p class="hero-subtitle">Experience the future of automated English essay evaluation with our advanced LSTM-based scoring algorithm. Precise, fast, and reliable.</p>
-    <div class="d-flex justify-content-center gap-3">
-        <a href="{% url 'UserLogin' %}" class="btn btn-primary d-flex align-items-center gap-2">
-            <i class="bi bi-rocket-takeoff"></i> Get Started
-        </a>
-        <a href="{% url 'AdminLogin' %}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
-            <i class="bi bi-shield-lock"></i> Staff Portal
-        </a>
-    </div>
-    
-    <div class="mt-5 pt-5 row justify-content-center">
-         <div class="col-md-3 mb-4">
-             <div class="modern-card p-4">
-                 <i class="bi bi-cpu text-primary mb-3 fs-1"></i>
-                 <h5>AI Extraction</h5>
-                 <p class="text-muted small">Automatic text extraction from images using OCR technology.</p>
-             </div>
-         </div>
-         <div class="col-md-3 mb-4">
-            <div class="modern-card p-4">
-                <i class="bi bi-graph-up-arrow text-primary mb-3 fs-1"></i>
-                <h5>Deep Learning</h5>
-                <p class="text-muted small">Powered by LSTM networks for deep semantic understanding.</p>
+<div class="container text-center hero-section animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <h1 class="hero-title animate__animated animate__fadeInDown">Elevate Your Essay Scoring</h1>
+            <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp">Experience the future of automated English essay evaluation with our advanced LSTM-based scoring algorithm. Precise, fast, and reliable analysis for academic excellence.</p>
+            
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-4 mb-5 pb-5">
+                <a href="{% url 'UserLogin' %}" class="btn btn-primary d-inline-flex align-items-center justify-content-center gap-3 px-5 py-3 shadow-lg">
+                    <i class="bi bi-rocket-takeoff fs-5"></i> 
+                    <span class="fw-bold h5 mb-0">Get Started Now</span>
+                </a>
+                <a href="{% url 'AdminLogin' %}" class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center gap-3 px-5 py-3 border-2">
+                    <i class="bi bi-shield-lock fs-5"></i> 
+                    <span class="fw-bold h5 mb-0">Staff Portal</span>
+                </a>
             </div>
         </div>
-        <div class="col-md-3 mb-4">
-            <div class="modern-card p-4">
-                <i class="bi bi-lightning text-primary mb-3 fs-1"></i>
-                <h5>Real-time Results</h5>
-                <p class="text-muted small">Get your essay scores and analysis in a matter of seconds.</p>
+    </div>
+    
+    <div class="mt-5 pt-lg-5 row justify-content-center g-4">
+         <div class="col-12 col-md-4">
+             <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                 <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
+                    <i class="bi bi-cpu text-primary fs-1"></i>
+                 </div>
+                 <h4 class="fw-bold mb-3">AI Detection</h4>
+                 <p class="text-muted">Automatic text extraction from various sources using cutting-edge OCR technology for seamless processing.</p>
+             </div>
+         </div>
+         <div class="col-12 col-md-4">
+            <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
+                    <i class="bi bi-graph-up-arrow text-primary fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Deep Analysis</h4>
+                <p class="text-muted">Powered by advanced LSTM neural networks to understand deep semantic structures and linguistic nuances.</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
+                    <i class="bi bi-lightning-charge text-primary fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Instant Insights</h4>
+                <p class="text-muted">Get comprehensive scores and detailed feedback in seconds, allowing for rapid iteration and learning.</p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .hero-section {
+        padding: 60px 0 100px;
+    }
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 1.1;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #0866FF 0%, #00C6FF 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+        font-size: 1.4rem;
+        color: #65676B;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.75rem;
+            letter-spacing: -1px;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+    }
+</style>
 {% endblock %}
