@@ -18,28 +18,31 @@
         :root {
             --primary-color: #0866FF;
             --secondary-color: #F0F2F5;
-            --dark-color: #1C1E21;
-            --light-color: #FFFFFF;
-            --accent-color: #42b72a;
-            --glass-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #1C1E21;
+            --text-secondary: #65676B;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --primary-gradient: linear-gradient(135deg, #0866FF 0%, #00C6FF 100%);
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-            --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
-            --primary-gradient: linear-gradient(135deg, #0866FF 0%, #00C6FF 100%);
+            --shadow-lg: 0 12px 30px rgba(0,0,0,0.12);
         }
 
+        /* Strict Mobile Portability Fixes */
         html, body {
-            overflow-x: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            touch-action: pan-y; /* Prevent pinch-zoom at CSS level */
+            -webkit-text-size-adjust: 100%;
+            overscroll-behavior-y: contain;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #F0F2F5;
-            color: var(--dark-color);
+            background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
