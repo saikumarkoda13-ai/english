@@ -1,86 +1,107 @@
 {% extends 'base.html' %}
 {% block contents %}
-<div class="container text-center hero-section animate__animated animate__fadeIn">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <h1 class="hero-title animate__animated animate__fadeInDown">Elevate Your Essay Scoring</h1>
-            <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp">Experience the future of automated English essay evaluation with our advanced LSTM-based scoring algorithm. Precise, fast, and reliable analysis for academic excellence.</p>
-            
-            <div class="d-flex flex-column flex-sm-row justify-content-center gap-4 mb-5 pb-5">
-                <a href="{% url 'UserLogin' %}" class="btn btn-primary d-inline-flex align-items-center justify-content-center gap-3 px-5 py-3 shadow-lg">
-                    <i class="bi bi-rocket-takeoff fs-5"></i> 
-                    <span class="fw-bold h5 mb-0">Get Started Now</span>
-                </a>
-                <a href="{% url 'AdminLogin' %}" class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center gap-3 px-5 py-3 border-2">
-                    <i class="bi bi-shield-lock fs-5"></i> 
-                    <span class="fw-bold h5 mb-0">Staff Portal</span>
-                </a>
-            </div>
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5 animate__animated animate__fadeIn">
+    <!-- App Logo Section -->
+    <div class="app-logo-container mb-5 text-center">
+        <div class="app-logo-bg animate__animated animate__zoomIn">
+            <i class="bi bi-journal-check text-white display-1 p-4"></i>
         </div>
+        <h1 class="app-title mt-4 mb-2">Essay Scoring</h1>
+        <p class="app-tagline text-muted fw-medium">Smart AI Evaluation System</p>
     </div>
-    
-    <div class="mt-5 pt-lg-5 row justify-content-center g-4">
-         <div class="col-12 col-md-4">
-             <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
-                 <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
-                    <i class="bi bi-cpu text-primary fs-1"></i>
-                 </div>
-                 <h4 class="fw-bold mb-3">AI Detection</h4>
-                 <p class="text-muted">Automatic text extraction from various sources using cutting-edge OCR technology for seamless processing.</p>
-             </div>
-         </div>
-         <div class="col-12 col-md-4">
-            <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-                <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
-                    <i class="bi bi-graph-up-arrow text-primary fs-1"></i>
-                </div>
-                <h4 class="fw-bold mb-3">Deep Analysis</h4>
-                <p class="text-muted">Powered by advanced LSTM neural networks to understand deep semantic structures and linguistic nuances.</p>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="modern-card h-100 p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
-                <div class="d-inline-flex p-3 rounded-4 bg-primary bg-opacity-10 mb-4">
-                    <i class="bi bi-lightning-charge text-primary fs-1"></i>
-                </div>
-                <h4 class="fw-bold mb-3">Instant Insights</h4>
-                <p class="text-muted">Get comprehensive scores and detailed feedback in seconds, allowing for rapid iteration and learning.</p>
-            </div>
-        </div>
+
+    <!-- Action Buttons -->
+    <div class="w-100 max-w-400 d-flex flex-column gap-3 mt-2">
+        <a href="{% url 'UserLogin' %}" class="app-btn btn-primary animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <i class="bi bi-person-fill"></i> User Login
+        </a>
+        <a href="{% url 'UserRegistrations' %}" class="app-btn btn-outline animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <i class="bi bi-person-plus-fill"></i> Register Now
+        </a>
+        <a href="{% url 'AdminLogin' %}" class="app-btn btn-dark animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <i class="bi bi-shield-lock-fill"></i> Admin Portal
+        </a>
+    </div>
+
+    <!-- Footer Credit -->
+    <div class="mt-auto pt-5">
+        <p class="small text-muted opacity-50 fw-medium">Powered by LSTM Neural Networks</p>
     </div>
 </div>
 
 <style>
-    .hero-section {
-        padding: 60px 0 100px;
+    .max-w-400 {
+        max-width: 400px;
     }
-    .hero-title {
-        font-size: 4rem;
+    .app-logo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .app-logo-bg {
+        width: 140px;
+        height: 140px;
+        background: var(--primary-gradient);
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 40px rgba(8, 102, 255, 0.3);
+        transform: rotate(-5deg);
+    }
+    .app-title {
+        font-size: 2.5rem;
         font-weight: 800;
-        letter-spacing: -2px;
-        line-height: 1.1;
-        margin-bottom: 30px;
-        background: linear-gradient(135deg, #0866FF 0%, #00C6FF 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #1C1E21;
+        letter-spacing: -1px;
     }
-    .hero-subtitle {
-        font-size: 1.4rem;
-        color: #65676B;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        font-weight: 500;
+    .app-tagline {
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+    .app-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 16px 20px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        box-shadow: var(--shadow-md);
+    }
+    .app-btn:active {
+        transform: scale(0.96);
+    }
+    .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+    }
+    .btn-outline {
+        background: rgba(255, 255, 255, 0.7);
+        border-color: #0866FF;
+        color: #0866FF;
+        backdrop-filter: blur(10px);
+    }
+    .btn-dark {
+        background: #1C1E21;
+        color: white;
     }
 
     @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.75rem;
-            letter-spacing: -1px;
+        .app-title {
+            font-size: 2.2rem;
         }
-        .hero-subtitle {
-            font-size: 1.1rem;
+        .app-logo-bg {
+            width: 120px;
+            height: 120px;
+        }
+        .app-btn {
+            padding: 14px 18px;
+            font-size: 1rem;
         }
     }
 </style>
