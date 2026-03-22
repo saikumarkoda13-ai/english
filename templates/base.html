@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
     <title>AES | Automatic English Essay Scoring</title>
     
     <!-- Google Fonts -->
@@ -38,9 +38,16 @@
             overscroll-behavior-y: contain;
         }
 
-        /* Prevent auto-zoom on mobile inputs */
-        input, select, textarea, .form-control {
+        /* ===== NUCLEAR NO-ZOOM FIX ===== */
+        /* Layer 1: CSS - Block all touch gestures globally */
+        * {
+            touch-action: pan-x pan-y !important; /* Blocks pinch-zoom at CSS level */
+        }
+
+        /* Layer 2: Input font-size 16px prevents iOS auto-zoom on tap */
+        input, select, textarea, .form-control, button {
             font-size: 16px !important;
+            touch-action: manipulation !important;
         }
 
         body {
@@ -211,5 +218,30 @@
 
     <!-- Vendor JS Files -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Layer 3: JS Nuclear No-Zoom Blocker -->
+    <script>
+        // Block pinch zoom via touch events
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Block gesture zoom (Safari-specific)
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Block double-tap zoom
+        var lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            var now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+    </script>
 </body>
-</html>
+</html>

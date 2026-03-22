@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {% block contents %}
-<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5 animate__animated animate__fadeIn">
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-3 animate__animated animate__fadeIn">
+    
     <!-- App Logo Section -->
-    <div class="app-logo-container mb-5 text-center">
-        <div class="app-logo-bg animate__animated animate__zoomIn">
-            <i class="bi bi-journal-check text-white display-1 p-4"></i>
+    <div class="app-logo-section text-center mb-3">
+        <div class="app-logo-bg animate__animated animate__zoomIn mx-auto">
+            <i class="bi bi-journal-check text-white fs-1"></i>
         </div>
-        <h1 class="app-title mt-4 mb-2">Essay Scoring</h1>
-        <p class="app-tagline text-muted fw-medium">Smart AI Evaluation System</p>
+        <h1 class="app-title mt-2 mb-0">Essay Scoring</h1>
+        <p class="app-tagline text-muted small fw-medium">Smart AI Evaluation System</p>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="w-100 max-w-400 d-flex flex-column gap-3 mt-2">
+    <!-- Action Buttons - THE VISUAL MIDDLE -->
+    <div class="w-100 max-w-400 d-flex flex-column gap-2 mb-4">
         <a href="{% url 'UserLogin' %}" class="app-btn btn-primary animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
             <i class="bi bi-person-fill"></i> User Login
         </a>
